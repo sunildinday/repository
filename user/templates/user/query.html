@@ -1,0 +1,33 @@
+{% extends 'user/base.html' %}
+{% block title %}Homepage{% endblock %}
+
+{% block body %}
+<div class="col-md-3">
+</div>
+<div class="col-md-6">
+{%for item in results %}
+<label class="switch">
+  <input type="checkbox">
+  <span class="slider round"></span>
+</label>
+<div class="list-group">
+
+  <a href="{{ item.document.url }}" class="list-group-item">
+      <h3 class="mb-1"><b style=" color:red;  ">Title</b>:&nbsp; <b style=" color:blue;  ">{{item.Title}}</b></h3>
+     <small><b style=" color:red;">Author</b>:&nbsp;<b style=" color:blue;  ">  {{item.Author}}</b></small>
+
+    <p class="mb-1"> <small>   <b style=" color:red;">Abstract</b>:&nbsp;</small>
+
+    <b style=" color:blue;  ">
+    {{item.Abstract}}
+	</b>
+	</p>
+    
+  </a>
+</div>
+
+{%endfor%}
+</div>
+<div class="col-md-3">
+</div>
+{% endblock %}
