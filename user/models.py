@@ -7,12 +7,11 @@ from django.db import models
 
 class KeyWord(models.Model):
 	key=models.CharField(max_length=30,null=True,default='')
-
 class Author(models.Model):
 	name=models.CharField(max_length=255,null=False,primary_key=True)
 	def __str__(self):
 		return self.name
-
+		
 class Documents(models.Model):
 	
 	user_id=models.IntegerField(null=False,default=1)
@@ -42,6 +41,6 @@ class Documents(models.Model):
 	author=models.ForeignKey(Author,on_delete=models.CASCADE,null=False)
 	key=models.ForeignKey(KeyWord,on_delete=models.CASCADE,null=True,default='')
 	
+	
 	def __str__(self):
-		return str(self.user_id)+' '+self.author.name+' '+self.visibilty
-
+		return self.title

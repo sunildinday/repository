@@ -12,5 +12,8 @@ urlpatterns = [
      url(r'^search/$', views.search, name='search'),
  		url(r'^query/$', views.query, name='query'),
  		url(r'^home/$', views.dashboard, name='dashboard'),
+ 		url(r'^ajaxdashboard/$',views.ajax_dashboard,name='ajaxdashboard'),
+ 		url(r'^ajaxtoggle/$',views.toggle,name='toggle'),
+ 		
          
 ]

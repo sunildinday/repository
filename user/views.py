@@ -9,6 +9,7 @@ from django.db.models import Q
 from user.models import Documents,Author
 #from user.forms import UserRegistrationForm
 
+#used to submit the documet
 def index(request):
     if request.user.is_authenticated():
         if request.method=='POST':
@@ -16,7 +17,7 @@ def index(request):
             try:
                 author=Author.objects.get(name=request.POST['author'])
             except Author.DoesNotExist:
-                author=Author(request.POST['author'])
+                author=Author(request.POST['author'].title())
                 author.save()
             post={}
 
@@ -26,7 +27,8 @@ def index(request):
                     continue
                 post[key]=request.POST[key]
             post['user_id']=request.user.id
-        
+            post['title']=post['title'].title()
+            post['abstract']=post['abstract'].title()
             form=DocumentForm(post,request.FILES)
             if form.is_valid():
                 form.save()
@@ -97,9 +99,9 @@ def query(request):
         author= request.GET['author']
         title= request.GET['title']
         if author=="":
-            author="#@!@#$@@!@!@!@!@@"
+            author="#@!@#$@@!@!@!@!@@ sadbhias hdsai dhias dhasui hdius"
         if title=="":
-            title="#@!@#$@@!@!@!@!@@"  
+            title="#@!@#$@@!@!@!@!@@ sdad sad sadsad sadsadsad"  
         results=Document.objects.filter(Q(Title__icontains=title)|Q(Author__icontains=author))
         #results=Document.objects.all()
         return render(request,'user/query.html',{'results':results})    
@@ -114,3 +116,42 @@ def dashboard(request):
     except:
         document=None
     return render(request,'user/dashboard.html',{'results':document,'user':user_id})
+from django.views.decorators.csrf import csrf_protect
+from django.http import JsonResponse
+@csrf_protect
+def ajax_dashboard(request):
+    if request.is_ajax():
+        q = request.GET.get('q')
+        user_id=request.user.id
+        if q=="":
+            q="!#!B(IOSDOJI@!(*SOSasdndjsaoi j2u90usadsa d -sdusad 00828y0ds d0sysya d0say d0syd"
+        try:
+            document=Documents.objects.filter(Q(title__icontains=q)&Q(user_id__icontains=user_id))
+           
+        except:
+            document=None
+        ajax=True
+
+        html= (render(request,'user/dashboard_result.html',{'results':document,'ajax':ajax}).content).decode('utf-8')
+      
+        
+        data={'hi':html}
+        return JsonResponse(data)
+        #return HttpResponse({'doc':document})
+        return render(request,'user/dashboard_result.html',{'results':document,'ajax':ajax})
+
+def toggle(request):
+    if request.is_ajax():
+        mode=request.GET.get('mode')
+        document_id=request.GET.get('document_id')
+        user_id=request.user.id
+        document=Documents.objects.get(id=document_id,user_id=user_id)
+        if mode=="PUBLIC":
+            document.visibilty="PRIVATE"
+        else:
+            document.visibilty="PUBLIC"
+        document.save()
+        data={'id':document.visibilty}
+        return JsonResponse(data)   
+
+     
