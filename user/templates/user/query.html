@@ -2,29 +2,54 @@
 {% block title %}Homepage{% endblock %}
 
 {% block body %}
-<div class="col-md-3">
-</div>
-<div class="col-md-6">
-{%for item in results %}
 
+
+
+<div class="col-md-2">
+</div>
+
+<div class="col-md-8">
+	{% if msg %}
+	<h1 class="bg-danger">{{msg}}</h1>
+	{% endif %}
 <div class="list-group">
+	{%for item in results %}
 
-  <a href="{{ item.document.url }}" class="list-group-item">
-      <h3 class="mb-1"><b style=" color:red;  ">Title</b>:&nbsp; <b style=" color:blue;  ">{{item.Title}}</b></h3>
-     <small><b style=" color:red;">Author</b>:&nbsp;<b style=" color:blue;  ">  {{item.Author}}</b></small>
-
-    <p class="mb-1"> <small>   <b style=" color:red;">Abstract</b>:&nbsp;</small>
-
-    <b style=" color:blue;  ">
-    {{item.Abstract}}
-	</b>
-	</p>
-    
-  </a>
-</div>
-
+		<div  class="list-group-item list-group-item-action flex-column  ">
+    		<div class="row">
+     			<div class="col-md-6"> 
+     				<span >
+     					<a href="{{ item.document.url }}"  style="text-decoration:none">&nbsp;&nbsp;&nbsp;
+     						<b>{{item.title}}
+     						</b>
+     					</a>
+     				</span>
+     			</div>
+    		<div class="col-md-6">  <small class="pull-right" >{{item.created_on}}</small>
+    		</div>
+    	</div>
+    	</br>
+     	<small class="text-muted">{{item.author|title}}</small>
+    	</br>
+     	<small class="text-muted">{{item.publisher}}</small>
+     	{% if item.publisher %}
+    	</br>
+    	{% endif %}
+    	
+    	<p class="mb-1">{{ item.branch}}</p>
+    	<div class="row">
+    		<div class="col-md-6">
+    			&nbsp;&nbsp;&nbsp;
+  		
+		</div>
+		<div class="col-md-6">
+			
+			<span class="pull-right "><b class="text-info">Downloads</b>: {{item.downloads}}</span>
+		</div>
+	</div>
+	</div>
 {%endfor%}
 </div>
-<div class="col-md-3">
+<div class="col-md-2">
 </div>
 {% endblock %}

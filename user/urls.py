@@ -14,6 +14,11 @@ urlpatterns = [
  		url(r'^home/$', views.dashboard, name='dashboard'),
  		url(r'^ajaxdashboard/$',views.ajax_dashboard,name='ajaxdashboard'),
  		url(r'^ajaxtoggle/$',views.toggle,name='toggle'),
+ 		url(r'^about/$',views.about,name='about'),
+ 		url(r'^bibtexloads/$',views.bibtex,name='bibtex'),
+ 		url(r'^checker/$',views.checker,name='checker'),
+ 		url(r'^editpost$',views.editpost,name='editpost'),
+ 		url(r'^savepost/$',views.savepost,name='savepost'),
  		
          
 ]

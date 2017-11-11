@@ -17,7 +17,7 @@ from user.models  import Documents
 class DocumentForm(forms.ModelForm):
     class Meta:
         model=Documents
-        fields={'title','abstract','document','author','branch','visibilty','user_id'}
+        fields={'id','title','abstract','document','author','branch','visibilty','user_id','publisher'}
 
 
 class UserRegistrationForm(forms.Form):

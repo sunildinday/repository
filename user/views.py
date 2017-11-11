@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from .forms import UserRegistrationForm
@@ -6,36 +6,28 @@ from .forms import UserLoginForm
 from .forms import DocumentForm
 from django.http import HttpResponse
 from django.db.models import Q
-from user.models import Documents,Author
+from user.models import Documents
 #from user.forms import UserRegistrationForm
 
 #used to submit the documet
 def index(request):
     if request.user.is_authenticated():
-        if request.method=='POST':
-          
-            try:
-                author=Author.objects.get(name=request.POST['author'])
-            except Author.DoesNotExist:
-                author=Author(request.POST['author'].title())
-                author.save()
+        if request.method=='POST' and request.FILES:
             post={}
-
             for key in request.POST:
-                if key=='author':
-                    post[key]=author
-                    continue
                 post[key]=request.POST[key]
             post['user_id']=request.user.id
             post['title']=post['title'].title()
             post['abstract']=post['abstract'].title()
+
             form=DocumentForm(post,request.FILES)
             if form.is_valid():
                 form.save()
                 return render(request,'user/done.html') 
         else :
             form=DocumentForm()
-            return render(request,'user/home.html',{'form':form})    
+            data={'sunil':'didnay'}
+            return render(request,'user/home.html',{'form':form,'data':data})    
     else:
         return render(request, 'user/login.html')
 
@@ -98,13 +90,18 @@ def query(request):
     if request.user.is_authenticated():
         author= request.GET['author']
         title= request.GET['title']
+        user_id=request.user.id
         if author=="":
             author="#@!@#$@@!@!@!@!@@ sadbhias hdsai dhias dhasui hdius"
         if title=="":
             title="#@!@#$@@!@!@!@!@@ sdad sad sadsad sadsadsad"  
-        results=Document.objects.filter(Q(Title__icontains=title)|Q(Author__icontains=author))
+        results=Documents.objects.filter((Q(title__icontains=title)|Q(author__icontains=author))&Q(visibilty='PUBLIC')&(~Q(user_id=user_id)))
         #results=Document.objects.all()
-        return render(request,'user/query.html',{'results':results})    
+       
+        if not  results:
+            msg="Empty Search Result"
+            return render(request,'user/query.html',{'results':results,'msg':msg})  
+        return render(request,'user/query.html',{'results':results,})    
     else:
         return render(request, 'user/login.html') 
    
@@ -140,6 +137,8 @@ def ajax_dashboard(request):
         #return HttpResponse({'doc':document})
         return render(request,'user/dashboard_result.html',{'results':document,'ajax':ajax})
 
+
+# used to toggle the private and public visibilty of  a document
 def toggle(request):
     if request.is_ajax():
         mode=request.GET.get('mode')
@@ -154,4 +153,91 @@ def toggle(request):
         data={'id':document.visibilty}
         return JsonResponse(data)   
 
+    
+def about(request): 
+    return render(request,'user/about.html')
+
+
+def bibtex(request):
+
+    if request.FILES:
+        
+        files=request.FILES[list(request.FILES.keys())[0]]
+        
+        bibtex_str = str(files.read())
+        post={}
+        index1=bibtex_str.find('title=')
+        if index1!=-1:
+            index2=bibtex_str.find('}',index1)
+            post['title']=bibtex_str[index1+7:index2]
+
+        index1=bibtex_str.find('author=')
+        if index1!=-1:
+            index2=bibtex_str.find('}',index1)
+            post['author']=bibtex_str[index1+8:index2]
+
+
+        index1=bibtex_str.find('abstract=')
+        if index1!=-1:
+            index2=bibtex_str.find('}',index1)
+            post['abstract']=bibtex_str[index1+10:index2]
+
+        index1=bibtex_str.find('publisher=')
+        
+        if index1!=-1:
+            index2=bibtex_str.find('}',index1)
+            post['publisher']=bibtex_str[index1+11:index2]
+
+        form=DocumentForm(post)
+      
+        return render(request,'user/home.html',{'form':form,})   
+        
      
+       
+# view to check for duplicates
+def checker(request):
+    if request.is_ajax():
+        title=request.GET.get('title')
+        author=request.GET.get('author')
+        if author=="":
+            author="#@!@#$@@!@!@!@!@@ sadbhias hdsai dhias dhasui hdius"
+        if title=="":
+            title="#@!@#$@@!@!@!@!@@ sdad sad sadsad sadsadsad" 
+        try:
+            document=Documents.objects.filter(Q(title__icontains=title)&Q(author__icontains=author))
+           
+        except:
+            document=None
+        msg={'msg':"",}
+      
+        if  document:
+            msg={"msg":"Duplicate File with same author and title"}
+            #return JsonResponse(msg)   
+        return JsonResponse(msg)   
+
+def editpost(request):
+    if request.method=='POST':
+        instance = get_object_or_404(Documents, id=request.POST['doc_id'])
+        form = DocumentForm( instance=instance)
+        return render(request,'user/editpost.html',{'form':form,'id':request.POST['doc_id']})
+
+
+    else:
+        logout_user(request)
+       # return render(request,'user/editpost.html',{'form':form})
+def savepost(request):
+    if request.method=='POST':
+        instance = get_object_or_404(Documents, id=request.POST['doc_id'])
+        post={}
+        for key in request.POST:
+            post[key]=request.POST[key]
+          
+        post['user_id']=request.user.id
+        post['title']=post['title'].title()
+        post['abstract']=post['abstract'].title()
+        form = DocumentForm(post, instance=instance)
+        if form.is_valid():
+            form.save()
+            return render(request,'user/done.html') 
+    else:
+        logout_user(request)

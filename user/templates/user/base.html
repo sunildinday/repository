@@ -22,15 +22,7 @@
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
     <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
-    <style type="text/css">
-        {
-
-
-body {
-    font-family: 'Open Sans', sans-serif;
-}  
-        }
-    </style>
+  
     {% block extra_js %}
 
     {% endblock %}
@@ -41,26 +33,29 @@ body {
 </head>
 
 <body>
-
+<h1>NIT MIZORAM</h1>
 <nav class="navbar navbar-inverse">
     <div clas="container-fluid">
 
         <!-- Header -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+                <span class="icon-bar">hi</span>
+                <span class="icon-bar">hi</span>
+                <span class="icon-bar">hi</span>
             </button>
-            <a class="navbar-brand" href="{% url 'user:index' %}">Submit</a>
+         
         </div>
 
         <!-- Items -->
         <div class="collapse navbar-collapse" id="topNavBar">
             <ul class="nav navbar-nav">
-                <li><a href="#">About</a></li>
-                  <li><a href="{% url 'user:dashboard'%}">Dashboard</a></li>
+                 <li><a href="{% url 'user:dashboard'%}">Dashboard</a></li>
+                   <li> <a class="navbar-brand" href="{% url 'user:index' %}">Submit</a></li>
+                              
                 <li><a href="{% url 'user:search' %}">Search</a></li>
+                 <li><a href="{% url 'user:about' %}">About</a></li>
+       
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
@@ -72,7 +67,6 @@ body {
     </div>
 </nav>
 
-</nav>
 
 {% block body %}
 {% endblock %}

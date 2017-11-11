@@ -1,59 +1,7 @@
-<!--  This page is used to show the submit page of the repository  -->
-
 {% extends 'user/base.html' %}
-
-{% block title %}Submit{% endblock %}
-
-{% block extra_js %}
-  {% load static %}
-
-
-<script type="text/javascript">
-
-$( document ).ready( function() {
- $('#id_title').keyup(function () {
-      var title = $(this).val();
-        var author=$("#id_author").val();
-      if(title!='')
-      $.ajax({
-        url: "{% url 'user:checker' %}",
-        data: {
-          'title': title,
-          'author':author
-        },
-        dataType: 'json',
-        success: function (data) {
-          var answer=data['msg']
-         // alert(data['msg']);
-
-          $('#duplicates').html( answer);
-        }
-      });
-
-    });
- });
-
-
-
-
-</script>
-
-
-
-<script type="text/javascript">
-    $(document).on('change',function(){
-        $('#bibtex').click();
-    });
-</script>
-
-
-
-{% endblock %}
+{% block title %}Homepage{% endblock %}
 
 {% block body %}
-
-
-
 
 <div class="container-fluid" align="center">
  <div class="row">
@@ -64,30 +12,13 @@ $( document ).ready( function() {
 
 
             <div class="panel panel-default" >
-                     <h1>Use <b>BibTex</b> to populate the fields</h1>
-                  <label class="btn btn-default" > 
-
                    
-                    
-   <form class="form-horizontal" role="form" action="{% url 'user:bibtex' %}" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                         {{form.document}}
-                       <button type="submit" id="bibtex" style="display: none" >click</button>
-
-                  </form>
-
-              
-                    
-                 </label>
-
-                 </br>
-                 <h1><b>OR</b></h1>
                 <div class="panel-body" align="center">
                     
                     {% if error_message %}
                         <p><strong>{{ error_message }}</strong></p>
                     {% endif %}
-                    <form class="form-horizontal" role="form" action="{% url 'user:index' %}" method="post" enctype="multipart/form-data">
+                    <form class="form-horizontal" role="form" action="{% url 'user:savepost' %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         
                           <div class="form-group">
@@ -146,7 +77,7 @@ $( document ).ready( function() {
                             </div>
                         </div>
 
-
+ <input type="text" name="doc_id"   value={{id}}>
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="visibilty">
                                 Protection:
@@ -168,8 +99,4 @@ $( document ).ready( function() {
         </div>
     </div>
 </div>
- 
 {% endblock %}
-
-
-

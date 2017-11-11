@@ -1,6 +1,9 @@
 from django.contrib import admin
-from .models import Author,KeyWord,Documents
+from .models import KeyWord,Documents
+
 # Register your models here.
-admin.site.register(Author)
+class DocumentsAdmin(admin.ModelAdmin):
+	list_display=('title','abstract','document')
+
+admin.site.register(Documents,DocumentsAdmin)
 admin.site.register(KeyWord)
-admin.site.register(Documents)

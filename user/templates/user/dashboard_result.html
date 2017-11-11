@@ -1,7 +1,8 @@
-
+<!-- To show the search query result in dashboard page   --> 
 
     {% block extra_js %}
 
+ 
  
 
    {% endblock %}
@@ -29,9 +30,14 @@
     		</div>
     	</div>
     	</br>
-     	<small class="text-muted">{{item.author}}</small>
+     	<small class="text-muted">{{item.author|title}}</small>
     	</br>
-    	<p class="mb-1">{{ item.abstract}}</p>
+     	<small class="text-muted">{{item.publisher}}</small>
+     	{% if item.publisher %}
+    	</br>
+    	{% endif %}
+    	
+    	<p class="mb-1">{{ item.branch}}</p>
     	<div class="row">
     		<div class="col-md-6">
     			&nbsp;&nbsp;&nbsp;
